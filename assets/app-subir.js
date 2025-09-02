@@ -1,11 +1,13 @@
-// Form for adding new models (mock functionality)
+import { supabase, isSupabaseConfigured, TABLE_MODELOS } from './supabase.js';
+
+// Form for adding new models (Supabase if configured; otherwise mock)
 export function subirApp() {
   return {
     modelo: '',
     provincia: 'La Habana',
     bandas: { g2:false, g3:false, g4:false, g5:false },
     guardadoOk: false,
-    save(e) {
+    async save(e) {
       e.preventDefault();
       const bandas = [];
       if(this.bandas.g2) bandas.push('2G');
@@ -16,7 +18,22 @@ export function subirApp() {
         alert('Escribe un modelo y selecciona al menos una banda.');
         return;
       }
-      // Simulate save
+      if (isSupabaseConfigured && supabase) {
+        const payload = {
+          modelo: this.modelo.trim(),
+          operador: 'ETECSA',
+          provincia: this.provincia,
+          bandas: bandas,
+          revisado: false,
+        };
+        const { error } = await supabase.from(TABLE_MODELOS).insert([payload]);
+        if (error) {
+          console.error('Error saving to Supabase:', error);
+          alert('No se pudo guardar en Supabase. Revisa la consola.');
+          return;
+        }
+      }
+      // Local success feedback (works for both Supabase and mock)
       this.guardadoOk = true;
       setTimeout(() => { this.guardadoOk = false; }, 2000);
       this.modelo = '';

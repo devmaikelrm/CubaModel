@@ -1,4 +1,5 @@
 import { MODELOS } from './data.js';
+import { supabase, isSupabaseConfigured, TABLE_MODELOS } from './supabase.js';
 
 // Application for revisar.html: filtering models
 export function revisarApp() {
@@ -10,7 +11,27 @@ export function revisarApp() {
     live: true,
     filtered: [],
     data: MODELOS,
-    init() {
+    async init() {
+      // Try loading from Supabase if configured
+      if (isSupabaseConfigured) {
+        const { data, error } = await supabase
+          .from(TABLE_MODELOS)
+          .select('id, modelo, bandas, operador, provincia, revisado')
+          .order('modelo', { ascending: true });
+        if (!error && Array.isArray(data)) {
+          // Normalize to the structure used by UI
+          this.data = data.map(r => ({
+            id: r.id,
+            modelo: r.modelo,
+            bandas: Array.isArray(r.bandas) ? r.bandas : [],
+            operador: r.operador || 'ETECSA',
+            provincia: r.provincia,
+            revisado: !!r.revisado,
+          }));
+        } else {
+          console.warn('Supabase load failed, using mock data:', error);
+        }
+      }
       this.applyFilters();
     },
     reset() {
