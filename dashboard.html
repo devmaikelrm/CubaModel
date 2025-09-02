@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard · Consultas de Cel (Cuba)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { brand: {500:'#22c55e',600:'#16a34a',700:'#15803d'} } } }
+    }
+  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/shoelace.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/themes/dark.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <link rel="stylesheet" href="./assets/styles.css"/>
+</head>
+<body class="min-h-screen" onload="import('./assets/ui.js').then(m=>m.setTheme())">
+  <script type="module">
+    import { requireAuth, logout, currentUser } from './assets/auth.js';
+    requireAuth();
+    window._logout = logout;
+    window._user = currentUser();
+  </script>
+  <header class="sticky top-0 z-30 backdrop-blur border-b border-white/10">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3 text-[color:var(--ink)]">
+      <a href="dashboard.html" class="size-9 rounded-2xl grid place-items-center bg-brand-500/20 text-brand-700 font-black">CC</a>
+      <h1 class="text-base font-semibold">Dashboard</h1>
+      <div class="flex-1"></div>
+      <span class="text-xs text-muted" id="userMail"></span>
+      <sl-button class="ml-2" size="small" onclick="_logout()">Salir</sl-button>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl px-4 py-6 text-[color:var(--ink)]">
+    <!-- Counters -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+      <div class="rounded-2xl border border-white/10 bg-[color:var(--panel)] p-4 shadow-card">
+        <p class="text-xs text-muted">Registrados</p>
+        <p class="text-2xl font-semibold" id="kReg">0</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-[color:var(--panel)] p-4 shadow-card">
+        <p class="text-xs text-muted">Revisados</p>
+        <p class="text-2xl font-semibold" id="kRev">0</p>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-[color:var(--panel)] p-4 shadow-card">
+        <p class="text-xs text-muted">Provincias</p>
+        <p class="text-2xl font-semibold" id="kProv">0</p>
+      </div>
+    </section>
+    <!-- Buttons to pages -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <a href="subir.html" class="rounded-2xl border border-white/10 bg-[color:var(--panel)] p-4 shadow-card block hover:outline outline-1 outline-brand-500">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="iconify" data-icon="lucide:upload"></span>
+          <h2 class="text-base font-semibold">Subir modelos</h2>
+        </div>
+        <p class="text-sm text-muted">Agregar nuevos teléfonos con bandas y provincia.</p>
+      </a>
+      <a href="revisar.html" class="rounded-2xl border border-white/10 bg-[color:var(--panel)] p-4 shadow-card block hover:outline outline-1 outline-brand-500">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="iconify" data-icon="lucide:search"></span>
+          <h2 class="text-base font-semibold">Revisar compatibilidad</h2>
+        </div>
+        <p class="text-sm text-muted">Buscar por modelo, provincia y bandas.</p>
+      </a>
+    </section>
+  </main>
+  <script type="module">
+    import { MODELOS, PROVINCIAS_CU } from './assets/data.js';
+    document.getElementById('userMail').textContent = window._user?.email || '';
+    const registrados = MODELOS.length;
+    const revisados = MODELOS.filter(m => m.revisado).length;
+    const provincias = new Set(MODELOS.map(m => m.provincia)).size || PROVINCIAS_CU.length;
+    document.getElementById('kReg').textContent = registrados;
+    document.getElementById('kRev').textContent = revisados;
+    document.getElementById('kProv').textContent = provincias;
+  </script>
+</body>
+</html>

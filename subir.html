@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es" x-data="subirApp()" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Subir modelos · Cuba</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { brand: {500:'#22c55e',600:'#16a34a',700:'#15803d'} } } }
+    }
+  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/shoelace.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/themes/dark.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <link rel="stylesheet" href="./assets/styles.css"/>
+</head>
+<body class="min-h-screen" onload="import('./assets/ui.js').then(m=>m.setTheme())">
+  <script type="module">
+    import { requireAuth } from './assets/auth.js';
+    requireAuth();
+  </script>
+  <header class="sticky top-0 z-30 backdrop-blur border-b border-white/10">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3 text-[color:var(--ink)]">
+      <a href="dashboard.html" class="size-9 rounded-2xl grid place-items-center bg-brand-500/20 text-brand-700 font-black">CC</a>
+      <h1 class="text-base font-semibold">Subir modelos (Cuba)</h1>
+      <div class="flex-1"></div>
+      <a href="revisar.html" class="text-sm underline">Revisar compatibilidad</a>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl px-4 py-6 text-[color:var(--ink)]">
+    <form class="rounded-2xl border border-white/10 bg-[color:var(--panel)] p-4 shadow-card" @submit="save">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <sl-input pill required clearable placeholder="Modelo" x-model="modelo"></sl-input>
+        <sl-select pill value="ETECSA" disabled>
+          <sl-option value="ETECSA">ETECSA</sl-option>
+        </sl-select>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+        <sl-select pill :value="provincia" @sl-change="provincia=$event.target.value">
+          <sl-option value="La Habana">La Habana</sl-option>
+          <sl-option value="Camagüey">Camagüey</sl-option>
+          <sl-option value="Holguín">Holguín</sl-option>
+          <sl-option value="Santiago de Cuba">Santiago de Cuba</sl-option>
+          <sl-option value="Guantánamo">Guantánamo</sl-option>
+        </sl-select>
+        <div class="rounded-xl border border-white/10 p-3">
+          <p class="text-xs text-muted mb-2">Bandas</p>
+          <div class="flex flex-wrap gap-3">
+            <sl-checkbox @sl-change="bandas.g2=$event.target.checked">2G</sl-checkbox>
+            <sl-checkbox @sl-change="bandas.g3=$event.target.checked">3G</sl-checkbox>
+            <sl-checkbox @sl-change="bandas.g4=$event.target.checked">4G</sl-checkbox>
+            <sl-checkbox @sl-change="bandas.g5=$event.target.checked">5G</sl-checkbox>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center gap-3">
+        <sl-button variant="primary" type="submit">Guardar</sl-button>
+        <sl-alert variant="success" duration="2000" :open="guardadoOk">
+          <sl-icon slot="icon" name="check2-circle"></sl-icon>
+          Guardado correctamente (simulado).
+        </sl-alert>
+      </div>
+    </form>
+  </main>
+  <script type="module">
+    import { subirApp } from './assets/app-subir.js';
+    window.subirApp = subirApp;
+  </script>
+</body>
+</html>

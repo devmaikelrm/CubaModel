@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crear cuenta · Consultas de Cel (Cuba)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { brand: {500:'#22c55e',600:'#16a34a',700:'#15803d'} } } }
+    }
+  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/shoelace.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/themes/dark.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <link rel="stylesheet" href="./assets/styles.css"/>
+</head>
+<body class="min-h-screen grid place-items-center" onload="import('./assets/ui.js').then(m=>m.setTheme())">
+  <div class="w-[min(520px,94vw)] rounded-2xl border border-white/10 bg-[color:var(--panel)] p-6 shadow-card">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="size-9 rounded-2xl grid place-items-center bg-brand-500/20 text-brand-700 font-black">CC</div>
+      <div>
+        <h1 class="text-lg font-semibold leading-tight">Crear cuenta</h1>
+        <p class="text-xs text-muted -mt-0.5">Solo Cuba · ETECSA</p>
+      </div>
+    </div>
+    <form id="f" class="grid gap-3">
+      <sl-input id="email" type="email" placeholder="Correo" required pill clearable></sl-input>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <sl-input id="pass" type="password" placeholder="Contraseña (mín. 6)" required pill clearable toggle-password></sl-input>
+        <sl-input id="pass2" type="password" placeholder="Repetir contraseña" required pill clearable toggle-password></sl-input>
+      </div>
+      <sl-checkbox id="terms" size="small">Acepto los términos del servicio</sl-checkbox>
+      <sl-button variant="primary" class="w-full">Crear cuenta</sl-button>
+    </form>
+    <p class="text-xs text-muted mt-3">¿Ya tienes cuenta? <a class="underline" href="login.html">Entrar</a></p>
+  </div>
+  <script type="module">
+    document.getElementById('f').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const p1 = document.getElementById('pass').value;
+      const p2 = document.getElementById('pass2').value;
+      const terms = document.getElementById('terms').checked;
+      if(!email || p1.length < 6 || p1 !== p2 || !terms) {
+        alert('Completa todos los campos correctamente.');
+        return;
+      }
+      alert('Cuenta creada. Ahora entra.');
+      location.replace('login.html');
+    });
+  </script>
+</body>
+</html>

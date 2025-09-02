@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar · Consultas de Cel (Cuba)</title>
+  <!-- Tailwind (dark mode only) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { brand: {500:'#22c55e',600:'#16a34a',700:'#15803d'} } } }
+    }
+  </script>
+  <!-- Shoelace -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/shoelace.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/themes/dark.css"/>
+  <!-- Alpine -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Iconify for icons -->
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <link rel="stylesheet" href="./assets/styles.css"/>
+</head>
+<body class="min-h-screen grid place-items-center" onload="import('./assets/ui.js').then(m=>m.setTheme())">
+  <div class="w-[min(520px,94vw)] rounded-2xl border border-white/10 bg-[color:var(--panel)] p-6 shadow-card">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="size-9 rounded-2xl grid place-items-center bg-brand-500/20 text-brand-700 font-black">CC</div>
+      <div>
+        <h1 class="text-lg font-semibold leading-tight">Entrar</h1>
+        <p class="text-xs text-muted -mt-0.5">Solo Cuba · ETECSA</p>
+      </div>
+    </div>
+
+    <form id="f" class="grid gap-3">
+      <sl-input id="email" type="email" placeholder="Correo" required pill clearable></sl-input>
+      <sl-input id="pass" type="password" placeholder="Contraseña" required pill clearable toggle-password></sl-input>
+      <sl-button variant="primary" class="w-full">Entrar</sl-button>
+    </form>
+
+    <!-- Donaciones -->
+    <div class="mt-5 grid gap-3">
+      <div class="rounded-xl border border-white/10 p-4 bg-[color:var(--card)]">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="iconify" data-icon="simple-icons:paypal"></span>
+          <h2 class="text-sm font-semibold">Donaciones (PayPal)</h2>
+        </div>
+        <p class="text-xs text-muted mb-2">Apoya el proyecto con una donación.</p>
+        <a id="paypalLink" href="#" target="_blank" class="inline-flex items-center gap-2 rounded-xl px-3 py-2 bg-brand-500 text-black font-semibold">
+          <span class="iconify" data-icon="mdi:paypal"></span> Ir a PayPal
+        </a>
+        <p class="text-xs text-muted mt-2">Reemplaza el enlace en <code>login.html</code> (id <code>paypalLink</code>) con tu PayPal real.</p>
+      </div>
+
+      <div class="rounded-xl border border-white/10 p-4 bg-[color:var(--card)]">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="iconify" data-icon="ph:credit-card-duotone"></span>
+          <h2 class="text-sm font-semibold">Tarjeta (CUP)</h2>
+        </div>
+        <p class="text-xs text-muted mb-2">Datos para transferencias nacionales en CUP.</p>
+        <ul class="text-sm leading-6">
+          <li><b>Banco:</b> <span class="text-muted">BANDEC / BPA (edita)</span></li>
+          <li><b>Titular:</b> <span class="text-muted">Tu Nombre Aquí</span></li>
+          <li><b>N° Tarjeta:</b> <span class="text-muted">XXXX XXXX XXXX 1234</span></li>
+          <li><b>Nota:</b> <span class="text-muted">Cualquier referencia útil</span></li>
+        </ul>
+        <p class="text-xs text-muted mt-2">Edita estos datos en <code>login.html</code>.</p>
+      </div>
+    </div>
+
+    <p class="text-xs text-muted mt-4">¿No tienes cuenta? <a class="underline" href="register.html">Crear cuenta</a></p>
+  </div>
+
+  <script type="module">
+    import { login, isAuthed } from './assets/auth.js';
+    if(isAuthed()) location.replace('dashboard.html');
+    document.getElementById('f').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const pass = document.getElementById('pass').value;
+      if(!email || pass.length < 6) { alert('Revisa correo y contraseña (mín. 6).'); return; }
+      login(email, 'demo-token');
+      location.replace('dashboard.html');
+    });
+  </script>
+</body>
+</html>

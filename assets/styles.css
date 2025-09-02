@@ -1,0 +1,13 @@
+/* CSS variables for dark theme */
+:root {
+  --panel: #0f172a;
+  --card: #0f172a;
+  --ink: #e5e7eb;
+  --muted: #9aa5b1;
+}
+body {
+  background: #0b1220;
+  color: var(--ink);
+}
+.text-muted { color: var(--muted); }
+.shadow-card { box-shadow: 0 10px 30px rgba(0,0,0,.25); }

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es" x-data="revisarApp()" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Revisar compatibilidad · Cuba</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { colors: { brand: {500:'#22c55e',600:'#16a34a',700:'#15803d'} } } }
+    }
+  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/shoelace.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.17.1/cdn/themes/dark.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+  <link rel="stylesheet" href="./assets/styles.css"/>
+</head>
+<body class="min-h-screen" onload="import('./assets/ui.js').then(m=>m.setTheme())">
+  <script type="module">
+    import { requireAuth } from './assets/auth.js';
+    requireAuth();
+  </script>
+  <header class="sticky top-0 z-30 backdrop-blur border-b border-white/10">
+    <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3 text-[color:var(--ink)]">
+      <a href="dashboard.html" class="size-9 rounded-2xl grid place-items-center bg-brand-500/20 text-brand-700 font-black">CC</a>
+      <h1 class="text-base font-semibold">Revisar compatibilidad (Cuba)</h1>
+      <div class="flex-1"></div>
+      <a href="subir.html" class="text-sm underline">Subir modelos</a>
+    </div>
+  </header>
+  <main class="mx-auto max-w-6xl px-4 py-6 text-[color:var(--ink)]">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <aside class="lg:col-span-4 rounded-2xl border border-white/10 bg-[color:var(--panel)] p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-base font-semibold">Filtros</h2>
+          <button class="text-xs text-muted" @click="reset()">Limpiar</button>
+        </div>
+        <section class="mb-3">
+          <h3 class="text-xs uppercase tracking-wide text-muted mb-2">Bandas</h3>
+          <sl-select hoist multiple clearable pill size="small" value="todas" @sl-change="onBandasChange($event)">
+            <sl-option value="todas">Todas</sl-option>
+            <sl-option value="2g">2G</sl-option>
+            <sl-option value="3g">3G</sl-option>
+            <sl-option value="4g">4G</sl-option>
+            <sl-option value="5g">5G</sl-option>
+          </sl-select>
+        </section>
+        <section class="mb-3">
+          <h3 class="text-xs uppercase tracking-wide text-muted mb-2">Provincia</h3>
+          <sl-select hoist size="small" pill :value="provincia" @sl-change="provincia=$event.target.value; live && applyFilters()">
+            <sl-option value="all">Todas</sl-option>
+            <sl-option value="La Habana">La Habana</sl-option>
+            <sl-option value="Camagüey">Camagüey</sl-option>
+            <sl-option value="Holguín">Holguín</sl-option>
+            <sl-option value="Santiago de Cuba">Santiago de Cuba</sl-option>
+            <sl-option value="Guantánamo">Guantánamo</sl-option>
+          </sl-select>
+        </section>
+        <sl-input placeholder="Buscar modelo…" size="small" pill clearable @sl-input="q=$event.target.value; live && applyFilters()"></sl-input>
+        <div class="mt-3">
+          <sl-switch size="small" :checked="live" @sl-change="live=$event.target.checked">Filtrado en vivo</sl-switch>
+        </div>
+        <sl-button class="w-full mt-3" variant="primary" @click="applyFilters()">Aplicar filtros</sl-button>
+      </aside>
+      <section class="lg:col-span-8">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-sm text-muted"><span x-text="filtered.length"></span> resultado<span x-text="filtered.length===1?'':'s'"></span></p>
+          <div class="text-xs text-muted">Orden: <button class="underline" @click="toggleOrden()">por modelo (<span x-text="ordenAsc ? 'A→Z' : 'Z→A'"></span>)</button></div>
+        </div>
+        <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+          <template x-if="filtered.length === 0">
+            <div class="rounded-2xl border border-dashed border-white/10 p-6 text-center bg-[color:var(--panel)] text-muted">Sin resultados.</div>
+          </template>
+          <template x-for="item in filtered" :key="item.id">
+            <article class="rounded-2xl border border-white/10 bg-[color:var(--card)] p-4 shadow-card">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="text-base font-semibold" x-text="item.modelo"></h4>
+                  <p class="text-xs text-muted mt-0.5">Operador: <b>ETECSA</b> — <span x-text="item.provincia"></span></p>
+                </div>
+                <span class="text-[10px] px-2 py-1 rounded-lg border border-white/10 text-muted" x-text="item.revisado ? 'Revisado' : 'Pendiente'"></span>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-1.5">
+                <template x-for="b in item.bandas">
+                  <span class="text-xs px-2 py-1 rounded-full bg-[color:var(--panel)] border border-white/10" x-text="b"></span>
+                </template>
+              </div>
+            </article>
+          </template>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script type="module">
+    import { revisarApp } from './assets/app-revisar.js';
+    window.revisarApp = revisarApp;
+  </script>
+</body>
+</html>
