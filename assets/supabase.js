@@ -16,5 +16,7 @@ export const supabase = isSupabaseConfigured
   : null;
 
 // Table name used by this app
-export const TABLE_MODELOS = 'modelos';
-
+export const TABLE_MODELOS = 'modelos_cuba';
+export const VIEW_TOTAL = 'v_modelos_cuba_total';
+export const VIEW_REVISADOS = 'v_modelos_cuba_revisados';
+export const VIEW_PROVINCIAS = 'v_modelos_cuba_provincias';

@@ -73,12 +73,36 @@
   </main>
   <script type="module">
     import { MODELOS, PROVINCIAS_CU } from './assets/data.js';
-    const registrados = MODELOS.length;
-    const revisados = MODELOS.filter(m => m.revisado).length;
-    const provincias = new Set(MODELOS.map(m => m.provincia)).size || PROVINCIAS_CU.length;
-    document.getElementById('kReg').textContent = registrados;
-    document.getElementById('kRev').textContent = revisados;
-    document.getElementById('kProv').textContent = provincias;
+    import { supabase, isSupabaseConfigured, VIEW_TOTAL, VIEW_REVISADOS, VIEW_PROVINCIAS } from './assets/supabase.js';
+
+    async function loadKpis() {
+      if (isSupabaseConfigured && supabase) {
+        try {
+          const [t, r, p] = await Promise.all([
+            supabase.from(VIEW_TOTAL).select('total').maybeSingle(),
+            supabase.from(VIEW_REVISADOS).select('revisados').maybeSingle(),
+            supabase.from(VIEW_PROVINCIAS).select('provincias').maybeSingle(),
+          ]);
+          const registrados = t.data?.total ?? 0;
+          const revisados = r.data?.revisados ?? 0;
+          const provincias = p.data?.provincias ?? 0;
+          document.getElementById('kReg').textContent = registrados;
+          document.getElementById('kRev').textContent = revisados;
+          document.getElementById('kProv').textContent = provincias;
+          return;
+        } catch (e) {
+          console.warn('KPI fetch failed, falling back to mock:', e);
+        }
+      }
+      // Fallback to mock dataset
+      const registrados = MODELOS.length;
+      const revisados = MODELOS.filter(m => m.revisado).length;
+      const provincias = new Set(MODELOS.map(m => m.provincia)).size || PROVINCIAS_CU.length;
+      document.getElementById('kReg').textContent = registrados;
+      document.getElementById('kRev').textContent = revisados;
+      document.getElementById('kProv').textContent = provincias;
+    }
+    loadKpis();
   </script>
 </body>
 </html>
