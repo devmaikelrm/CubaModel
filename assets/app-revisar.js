@@ -11,6 +11,7 @@ export function revisarApp() {
     live: true,
     filtered: [],
     data: MODELOS,
+    updatingId: null,
     async init() {
       if (isSupabaseConfigured) {
         await this.fetchFiltered();
@@ -102,6 +103,28 @@ export function revisarApp() {
         await this.fetchFiltered();
       } else {
         this.applyLocalFilters();
+      }
+    },
+
+    async toggleRevisado(item) {
+      if (!isSupabaseConfigured) {
+        alert('Configura Supabase para actualizar estados.');
+        return;
+      }
+      try {
+        this.updatingId = item.id;
+        const { error } = await supabase
+          .from(TABLE_MODELOS)
+          .update({ revisado: !item.revisado })
+          .eq('id', item.id)
+          .limit(1);
+        if (error) throw error;
+        await this.fetchFiltered();
+      } catch (e) {
+        console.error('No se pudo actualizar:', e);
+        alert('No se pudo actualizar. Verifica permisos (dueño o admin).');
+      } finally {
+        this.updatingId = null;
       }
     }
   }
