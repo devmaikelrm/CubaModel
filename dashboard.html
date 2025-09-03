@@ -19,10 +19,14 @@
 </head>
 <body class="min-h-screen" onload="import('./assets/ui.js').then(m=>m.setTheme())">
   <script type="module">
-    import { requireAuth, logout, currentUser } from './assets/auth.js';
+    import { requireAuth, logout, currentUserEmail } from './assets/auth.js';
     requireAuth();
     window._logout = logout;
-    window._user = currentUser();
+    (async () => {
+      const email = await currentUserEmail();
+      const el = document.getElementById('userMail');
+      if (el) el.textContent = email || '';
+    })();
   </script>
   <header class="sticky top-0 z-30 backdrop-blur border-b border-white/10">
     <div class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3 text-[color:var(--ink)]">
@@ -69,7 +73,6 @@
   </main>
   <script type="module">
     import { MODELOS, PROVINCIAS_CU } from './assets/data.js';
-    document.getElementById('userMail').textContent = window._user?.email || '';
     const registrados = MODELOS.length;
     const revisados = MODELOS.filter(m => m.revisado).length;
     const provincias = new Set(MODELOS.map(m => m.provincia)).size || PROVINCIAS_CU.length;

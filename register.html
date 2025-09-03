@@ -38,7 +38,8 @@
     <p class="text-xs text-muted mt-3">¿Ya tienes cuenta? <a class="underline" href="login.html">Entrar</a></p>
   </div>
   <script type="module">
-    document.getElementById('f').addEventListener('submit', (e) => {
+    import { register } from './assets/auth.js';
+    document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
       const p1 = document.getElementById('pass').value;
@@ -48,7 +49,9 @@
         alert('Completa todos los campos correctamente.');
         return;
       }
-      alert('Cuenta creada. Ahora entra.');
+      const { error } = await register(email, p1);
+      if (error) { alert(error.message || 'No se pudo crear la cuenta'); return; }
+      alert('Cuenta creada. Revisa tu correo si es necesario y entra.');
       location.replace('login.html');
     });
   </script>

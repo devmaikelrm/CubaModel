@@ -20,6 +20,7 @@
   <!-- Iconify for icons -->
   <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
   <link rel="stylesheet" href="./assets/styles.css"/>
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 </head>
 <body class="min-h-screen grid place-items-center" onload="import('./assets/ui.js').then(m=>m.setTheme())">
   <div class="w-[min(520px,94vw)] rounded-2xl border border-white/10 bg-[color:var(--panel)] p-6 shadow-card">
@@ -60,7 +61,7 @@
         <ul class="text-sm leading-6">
           <li><b>Banco:</b> <span class="text-muted">BANDEC / BPA (edita)</span></li>
           <li><b>Titular:</b> <span class="text-muted">Tu Nombre Aquí</span></li>
-          <li><b>N° Tarjeta:</b> <span class="text-muted">XXXX XXXX XXXX 1234</span></li>
+          <li><b>Nº Tarjeta:</b> <span class="text-muted">XXXX XXXX XXXX 1234</span></li>
           <li><b>Nota:</b> <span class="text-muted">Cualquier referencia útil</span></li>
         </ul>
         <p class="text-xs text-muted mt-2">Edita estos datos en <code>login.html</code>.</p>
@@ -72,15 +73,17 @@
 
   <script type="module">
     import { login, isAuthed } from './assets/auth.js';
-    if(isAuthed()) location.replace('dashboard.html');
-    document.getElementById('f').addEventListener('submit', (e) => {
+    if (await isAuthed()) location.replace('dashboard.html');
+    document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
       const pass = document.getElementById('pass').value;
       if(!email || pass.length < 6) { alert('Revisa correo y contraseña (mín. 6).'); return; }
-      login(email, 'demo-token');
+      const { error } = await login(email, pass);
+      if (error) { alert(error.message || 'No se pudo iniciar sesión'); return; }
       location.replace('dashboard.html');
     });
   </script>
 </body>
 </html>
+
