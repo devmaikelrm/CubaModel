@@ -16,9 +16,7 @@ const { email } = Astro.props as { email?: string | null };
     <>
       <span class="muted small">{email}</span>
       <form action="/CubaModel/login">
-        <button class="btn" hx-on:click="logout" type="button" onclick="
-          import('/CubaModel/src/lib/supabase.ts').then(m=>m.supabase.auth.signOut().then(()=>location.assign('/CubaModel/login')))
-        ">Salir</button>
+        <button class="btn" type="button" onclick="logout()">Salir</button>
       </form>
     </>
   ) : (
@@ -28,3 +26,14 @@ const { email } = Astro.props as { email?: string | null };
   )}
 </header>
 
+<script type="module">
+  import { supabase } from '@/lib/supabase'
+  // Exponer logout simple en el navegador
+  // @ts-ignore
+  window.logout = async () => {
+    try { await supabase.auth.signOut() } finally { location.assign('/CubaModel/login') }
+  }
+  // @ts-ignore
+  window.logout ||= () => {}
+  export {}
+</script>

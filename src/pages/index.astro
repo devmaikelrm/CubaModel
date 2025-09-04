@@ -1,10 +1,6 @@
 ---
 import Header from '../components/Header.astro'
 import ModalBienvenida from '../components/ModalBienvenida.tsx'
-import { supabase, VIEW_TOTAL, VIEW_REVISADOS, VIEW_PROVINCIAS } from '../lib/supabase'
-
-// En Astro (estático) no tenemos sesión del cliente; pedimos el email en el cliente:
-const email = null;
 ---
 
 <html lang="es">
@@ -14,52 +10,14 @@ const email = null;
     <link rel="icon" href="/CubaModel/favicon.png" />
   </head>
   <body>
-    <Header client:load email={email} />
+    <Header />
     <main class="container">
-      <section class="grid kpis">
-        <div class="card"><p class="muted small">Registrados</p><p id="kReg" class="kpi">—</p></div>
-        <div class="card"><p class="muted small">Revisados</p><p id="kRev" class="kpi">—</p></div>
-        <div class="card"><p class="muted small">Provincias</p><p id="kProv" class="kpi">—</p></div>
-      </section>
       <section class="grid two mt">
         <a href="/CubaModel/subir" class="card">Subir modelos →</a>
         <a href="/CubaModel/revisar" class="card">Revisar compatibilidad →</a>
       </section>
     </main>
-
-    <!-- Modal (se monta cuando haya email; lo resolvemos en cliente) -->
-    <div id="modal-slot"></div>
-
-    <script type="module">
-      import { supabase } from '/CubaModel/src/lib/supabase.ts'
-      async function load(){
-        // KPIs (intentamos; si falla se quedan en —)
-        try{
-          const [t, r, p] = await Promise.all([
-            supabase.from('v_modelos_cuba_total').select('total').maybeSingle(),
-            supabase.from('v_modelos_cuba_revisados').select('revisados').maybeSingle(),
-            supabase.from('v_modelos_cuba_provincias').select('provincias').maybeSingle(),
-          ]);
-          document.getElementById('kReg').textContent = t.data?.total ?? '—'
-          document.getElementById('kRev').textContent = r.data?.revisados ?? '—'
-          document.getElementById('kProv').textContent = p.data?.provincias ?? '—'
-        }catch{}
-
-        const { data } = await supabase.auth.getUser()
-        const email = data.user?.email
-        if(email){
-          // Carga el modal de bienvenida
-          const { default: h, render } = await import('preact-render-to-string')
-          const { default: Modal } = await import('/CubaModel/src/components/ModalBienvenida.tsx')
-          // Montaje “hidratado” rápido:
-          const slot = document.getElementById('modal-slot')
-          const { h: createElement } = await import('preact')
-          import('preact/compat') // ensure compat in bundle
-          const { render: preactRender } = await import('preact')
-          preactRender(createElement(Modal, { email }), slot!)
-        }
-      }
-      load()
-    </script>
+    <ModalBienvenida client:load />
   </body>
 </html>
+
