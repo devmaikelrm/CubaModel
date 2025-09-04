@@ -27,7 +27,7 @@ const { email } = Astro.props as { email?: string | null };
 </header>
 
 <script type="module">
-  import { supabase } from '@/lib/supabase'
+  import { supabase } from '../lib/supabase'
   // Exponer logout simple en el navegador
   // @ts-ignore
   window.logout = async () => {
