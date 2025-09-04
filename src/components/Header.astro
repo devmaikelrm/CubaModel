@@ -1,0 +1,30 @@
+---
+import '../styles/base.css';
+const { email } = Astro.props as { email?: string | null };
+---
+<header class="hdr">
+  <a class="logo" href="/CubaModel/">CC</a>
+  <nav class="gap">
+    {email && <>
+      <a href="/CubaModel/">Dashboard</a>
+      <a href="/CubaModel/subir">Subir</a>
+      <a href="/CubaModel/revisar">Revisar</a>
+    </>}
+  </nav>
+  <div class="spacer" />
+  {email ? (
+    <>
+      <span class="muted small">{email}</span>
+      <form action="/CubaModel/login">
+        <button class="btn" hx-on:click="logout" type="button" onclick="
+          import('/CubaModel/src/lib/supabase.ts').then(m=>m.supabase.auth.signOut().then(()=>location.assign('/CubaModel/login')))
+        ">Salir</button>
+      </form>
+    </>
+  ) : (
+    <>
+      <a class="btn" href="/CubaModel/login">Entrar</a>
+    </>
+  )}
+</header>
+

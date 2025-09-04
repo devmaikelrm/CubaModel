@@ -1,0 +1,19 @@
+---
+import Header from '../components/Header.astro'
+import { ForgotBox } from '../components/AuthBox.tsx'
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Recuperar · CubaModel</title>
+    <link rel="icon" href="/CubaModel/favicon.png" />
+  </head>
+  <body>
+    <Header />
+    <main class="container">
+      <ForgotBox client:load />
+    </main>
+  </body>
+</html>
+

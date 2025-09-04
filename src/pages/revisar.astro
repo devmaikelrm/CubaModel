@@ -1,0 +1,19 @@
+---
+import Header from '../components/Header.astro'
+import RevisarGrid from '../components/RevisarGrid.tsx'
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Revisar · CubaModel</title>
+    <link rel="icon" href="/CubaModel/favicon.png" />
+  </head>
+  <body>
+    <Header client:load />
+    <main class="container">
+      <RevisarGrid client:load />
+    </main>
+  </body>
+</html>
+

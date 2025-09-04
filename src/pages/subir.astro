@@ -1,0 +1,18 @@
+---
+import Header from '../components/Header.astro'
+import SubirForm from '../components/SubirForm.tsx'
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Subir · CubaModel</title>
+    <link rel="icon" href="/CubaModel/favicon.png" />
+  </head>
+  <body>
+    <Header client:load />
+    <main class="container">
+      <SubirForm client:load />
+    </main>
+  </body>
+</html>
