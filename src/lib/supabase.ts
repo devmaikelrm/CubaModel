@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-export const SUPABASE_URL = 'https://dlnqkmcacfwhbwdjxczw.supabase.co'  // ← tu URL
-export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' // ← tu anon key
+export const SUPABASE_URL = 'https://dlnqkmcacfwhbwdjxczw.supabase.co'
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsbnFrbWNhY2Z3aGJ3ZGp4Y3p3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYyNTUwMTYsImV4cCI6MjA3MTgzMTAxNn0.ytem47gk5X7wVBiT_ke-nudkL9kGWdIR1ScxDcMpWck'
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
